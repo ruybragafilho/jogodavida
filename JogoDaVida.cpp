@@ -16,48 +16,58 @@ using namespace std;
 
 
 // Definicao da Classe Vida, que representa uma colonia de organismos do jogo Vida
-// de John Horton Conway. Essa colonia habita um mapa de 22 linhas por 80 colunas.
+// de John Horton Conway. 
 class Vida {
+
 
     private:
 
-        // Matriz de char contendo a colonia de organismos do jogo 
+        // Matriz de char que representa o mapa contendo a colonia de organismos do jogo.
+        // Esse mapa tera numLinhas linhas e numColunas colunas.  
 
-        static const long NUM_LINHAS{22};
-        static const long NUM_COLUNAS{80};
+        long numLinhas;
+        long numColunas;
         
-        char colonia[NUM_LINHAS][NUM_COLUNAS];
-        
+        char** mapaGeracaoAtual;
+        char** mapaGeracaoAnterior;
 
-        // Metodo privado que conta o numero de organismos na vizinhanca
-        // na celula da posicao (linha, coluna)
-        long numVizinhos( long linha, long coluna );
 
-        // Metodo privado que verifica se a celula (linha,coluna) tem
+        // Metodo privado que conta o numero de organismos na vizinhanca da
+        // celula da posicao (linha, coluna) do mapa passado como parametro
+        long numVizinhos( char** mapa, long linha, long coluna );
+
+        // Metodo privado que verifica se a celula (linha,coluna) do mapa passado como parametro tem
         // um organismo vivo
-        bool temOrganismo( long linha, long coluna );
+        bool temOrganismo( char** mapa, long linha, long coluna );
+
+        // Metodo que cria um novo organismo na posicao (linha, coluna) do mapa passado como parametro
+        void nasce( char** mapa, long linha, long coluna );
+
+        // Metodo que elimina um organismo na posicao (linha, coluna) do mapa passado como parametro
+        void morre( char** mapa, long linha, long coluna );
 
 
 
     public:
 
         // Construtor da classe Vida. Esse construtor cria um mapa
-        // vazio, ou seja, contendo caracteres ' '.
-        Vida();
+        // vazio, ou seja, contendo caracteres ' ', com dimensao
+        // (numLinhas, NumColunas).
+        Vida( long numLinhas, long numColunas );
 
-        // Metodo que cria um novo organismo na posicao (linha, coluna)
-        void nasce( long linha, long coluna );
+        // Destrutor da classe Vida. Esse destrutor desaloca a memoria 
+        // dinamica alocada pelo objeto da classe Vida
+        ~Vida();    
 
-        // Metodo que elimina um organismo na posicao (linha, coluna)
-        void morre( long linha, long coluna );
 
         // Metodo que gera a proxima geracao de organismos, com base na geracao atual e 
         // nas regras do Jogo da Vida de John Horton Conway
         void proximaGeracao();
 
+
         // Metodo que imprime a colonia de organismos no console, onde:
-        //    1 significa presenca de organismo 
-        //    0 significa ausencia de organismo 
+        //    *  significa presenca de organismo 
+        //   ' ' significa ausencia de organismo 
         void imprime();
 
 }; // Fim da definicao da classe vida
@@ -65,104 +75,157 @@ class Vida {
 
 
 
-// ************************** Definicao dos metodos privados da classe Vida **************************
+// ************************** Definicoes dos metodos privados da classe Vida **************************
 
 
 
-// Definicao do metodo privado que conta o numero de organismos 
-// na vizinhanca na celula da posicao (linha, coluna)
-long Vida::numVizinhos( long linha, long coluna )  {
+// Definicao do metodo privado que conta o numero de organismos na vizinhanca
+// da celula da posicao (linha, coluna) do mapa passado como parametro
+long Vida::numVizinhos( char** mapa, long linha, long coluna )  {
 
     long count{0};
     
     // Conta o numeto de organismos na linha de cima
-    if( this->temOrganismo(linha-1, coluna-1) ) ++count;
-    if( this->temOrganismo(linha-1, coluna)   ) ++count;
-    if( this->temOrganismo(linha-1, coluna+1) ) ++count;
+    if( this->temOrganismo( mapa, linha-1, coluna-1 ) ) ++count;
+    if( this->temOrganismo( mapa, linha-1, coluna )   ) ++count;
+    if( this->temOrganismo( mapa, linha-1, coluna+1 ) ) ++count;
 
     // Conta o numeto de organismos na linha da celula
-    if( this->temOrganismo(linha, coluna-1) ) ++count;
-    if( this->temOrganismo(linha, coluna+1) ) ++count;
+    if( this->temOrganismo( mapa, linha, coluna-1 ) ) ++count;
+    if( this->temOrganismo( mapa, linha, coluna+1 ) ) ++count;
 
     // Conta o numeto de organismos na linha de baixo
-    if( this->temOrganismo(linha+1, coluna-1) ) ++count;
-    if( this->temOrganismo(linha+1, coluna)   ) ++count;
-    if( this->temOrganismo(linha+1, coluna+1) ) ++count;
+    if( this->temOrganismo( mapa, linha+1, coluna-1 ) ) ++count;
+    if( this->temOrganismo( mapa, linha+1, coluna )   ) ++count;
+    if( this->temOrganismo( mapa, linha+1, coluna+1 ) ) ++count;
 
-    return(count);
+    return( count );
 
 } // Fim da definicao do metodo numVizinhos
 
 
 
-// Definicao do metodo privado que verifica se a celula (linha,coluna) tem
+// Definicao do metodo privado que verifica se a celula (linha,coluna) do mapa passado como parametro tem
 // um organismo vivo
-bool Vida::temOrganismo( long linha, long coluna )  {
+bool Vida::temOrganismo( char** mapa, long linha, long coluna )  {
 
-    if(  linha  >= 0   &&   linha  < this->NUM_LINHAS  &&
-         coluna >= 0   &&   coluna < this->NUM_COLUNAS  )   {
+    if(  linha  >= 0   &&   linha  < this->numLinhas  &&
+         coluna >= 0   &&   coluna < this->numColunas  )   {
 
-        return(  this->colonia[linha][coluna] == '*' );
+        return(  mapa[linha][coluna] == '*' );
     }
 
     return( false );  
     
-} // Fim da definicao do metodo bool Vida::temOrganismo( long linha, long coluna )  {
+} // Fim da definicao do metodo temOrganismo
 
 
 
+// Definicao do metodo que cria um novo organismo na posicao (linha, coluna) do mapa passado como parametro
+void Vida::nasce( char** mapa, long linha, long coluna )  {
 
+    if(  linha  >= 0   &&   linha  < this->numLinhas  &&
+         coluna >= 0   &&   coluna < this->numColunas  )   {
 
-// ************************** Definicao do construtor da classe Vida **************************
-
-
-
-// Definicao do construtor da classe Vida. Esse construtor cria um mapa
-// vazio, ou seja, contendo caracteres ' '.
-Vida::Vida()  {
-
-    long i, j;
-
-    for( i=0; i<this->NUM_LINHAS; ++i )  {
-
-        for( j=0; j<this->NUM_COLUNAS; ++j )  {
-
-            this->colonia[i][j] = ' ';
-        }
-    }
-
-} // Fim da definicao do construtor da classe Vida
-
-
-
-
-// ************************** Definicao dos metodos publicos da classe Vida **************************
-
-
-
-// Definicao do metodo que cria um novo organismo na posicao (linha, coluna)
-void Vida::nasce( long linha, long coluna )  {
-
-    if(  linha  >= 0   &&   linha  < this->NUM_LINHAS  &&
-         coluna >= 0   &&   coluna < this->NUM_COLUNAS  )   {
-
-        this->colonia[linha][coluna] = '*';
+        mapa[linha][coluna] = '*';
     }  
 
 } // Fim da definicao do metodo nasce
 
 
 
-// Definicao do metodo que elimina um organismo na posicao (linha, coluna)
-void Vida::morre( long linha, long coluna )  {
+// Definicao do metodo que elimina um organismo na posicao (linha, coluna) do mapa passado como parametro
+void Vida::morre( char** mapa, long linha, long coluna )  {
 
-    if(  linha  >= 0   &&   linha  < this->NUM_LINHAS  &&
-         coluna >= 0   &&   coluna < this->NUM_COLUNAS  )   {
+    if(  linha  >= 0   &&   linha  < this->numLinhas  &&
+         coluna >= 0   &&   coluna < this->numColunas  )   {
 
-        this->colonia[linha][coluna] = ' ';
+        mapa[linha][coluna] = ' ';
     }  
 
 } // Fim da definicao do metodo morre
+
+
+
+
+// ************************** Definicoes do construtor e destrutor da classe Vida **************************
+
+
+// Definicao do construtor da classe Vida. Esse construtor cria um 
+// mapa vazio, ou seja, contendo caracteres ' ', com dimensao
+// (numLinhas, NumColunas).
+Vida::Vida( long numLinhas, long numColunas )  {
+
+    long i, j;
+
+    char** mapaGeracaoAtual;
+    char** mapaGeracaoAnterior;
+  
+
+    // Alocacao dinamica de memoria para os mapas
+
+    *mapaGeracaoAtual     = new char[numLinhas];
+    *mapaGeracaoAnterior  = new char[numLinhas];
+
+    for( i=0; i<numLinhas; ++i )  {
+
+        mapaGeracaoAtual[i]     = new char[numColunas];
+        mapaGeracaoAnterior[i]  = new char[numColunas];
+    }
+
+
+    // Inicializacao das celulas do mapa
+
+    for( i=0; i<numLinhas; ++i )  {
+
+        for( j=0; j<numColunas; ++j )  {
+
+            mapaGeracaoAtual[i][j] = mapaGeracaoAnterior[i][j] = ' ';            
+        }
+    }
+
+
+    // Inicializacao dos atributos do objeto
+    this->numLinhas   =  numLinhas;
+    this->numColunas  =  numColunas;
+
+    this->mapaGeracaoAtual     =  mapaGeracaoAtual;
+    this->mapaGeracaoAnterior  =  mapaGeracaoAnterior;
+
+} // Fim da definicao do construtor da classe Vida
+
+
+
+// Definicao do destrutor da classe Vida. Esse destrutor desaloca 
+// a memoria dinamica alocada pelo objeto da classe Vida
+Vida::~Vida()  {
+
+    long i, j;
+
+    // Variaveis auxiliares para os atributos do objeto
+    long numLinhas   =  this->numLinhas;
+    char** mapaGeracaoAtual     =  this->mapaGeracaoAtual;
+    char** mapaGeracaoAnterior  =  this->mapaGeracaoAnterior;    
+  
+
+    // Desalocacao dinamica da memoria dos mapas
+
+    for( i=0; i<numLinhas; ++i )  {
+
+        delete( mapaGeracaoAtual[i] );
+        delete( mapaGeracaoAnterior[i] );       
+    }
+
+    delete( mapaGeracaoAtual );
+    delete( mapaGeracaoAnterior );    
+
+} // Fim da definicao do destrutor da classe Vida  
+
+
+
+
+
+// ************************** Definicoes dos metodos publicos da classe Vida **************************
 
 
 
@@ -173,56 +236,65 @@ void Vida::proximaGeracao()  {
     long i, j;
     long numVizinhos;
 
-    char geracaoAnterior[this->NUM_LINHAS][this->NUM_COLUNAS];
+    // Variaveis auxiliares para os atributos do objeto
+    long numLinhas   =  this->numLinhas;
+    long numColunas  =  this->numColunas;    
+    char** mapaGeracaoAnterior  =  this->mapaGeracaoAtual;  // Geracao atual vira geracao anterior
+    char** mapaGeracaoFutura    =  this->mapaGeracaoAnterior;  // Proxima Geracao
 
 
-    // Cria uma copia temporaria da geracao anterior
-    for( i=0; i<this->NUM_LINHAS; ++i )  {
+    // Produz a proxima geracao de organismos
+    for( i=0; i<numLinhas; ++i )  {
 
-        for( j=0; j<this->NUM_COLUNAS; ++j )  {
+        for( j=0; j<numColunas; ++j )  {
 
-            geracaoAnterior[i][j] = this->colonia[i][j];        
+            // Processa a celula atual
 
-        } // for j
-    } // for i
+            // Inicializa a celula atual da proxima geracao com o 
+            // conteudo da mesma celula, na geracao anterior
+            mapaGeracaoFutura[i][j] = mapaGeracaoAnterior[i][j];
+            
+            // Conta o numero de celulas vizinhas ocupadas
+            numVizinhos = this->numVizinhos( mapaGeracaoAnterior, i, j );
 
-
-
-    for( i=0; i<this->NUM_LINHAS; ++i )  {
-
-        for( j=0; j<this->NUM_COLUNAS; ++j )  {
-
-            numVizinhos = this->numVizinhos( i, j );
-
-            if( temOrganismo( i, j ) )  {
-
-                if( numVizinhos <= 1 || numVizinhos >= 4 )   this->morre(i,j);                    
+            // Aplica as regras do jogo da vida aa celula atual   
+            if( temOrganismo( mapaGeracaoAnterior, i, j ) )  {
+                
+                if( numVizinhos <= 1 || numVizinhos >= 4 )   this->morre( mapaGeracaoFutura, i, j );                    
 
             } else {
 
-                if( numVizinhos == 3 )   this->nasce(i,j); 
-
-            }
+                if( numVizinhos == 3 )   this->nasce( mapaGeracaoFutura, i, j ); 
+            } 
 
         } // for j
     } // for i
+
+    this->mapaGeracaoAtual    = mapaGeracaoFutura;
+    this->mapaGeracaoAnterior = mapaGeracaoAnterior
 
 } // Fim da definicao do metodo proximaGeracao
 
 
 
 // Definicao do metodo que imprime a colonia de organismos no console, onde:
-//    1 significa presenca de organismo 
-//    0 significa ausencia de organismo 
+//    *  significa presenca de organismo 
+//   ' ' significa ausencia de organismo 
 void Vida::imprime()  {
 
     long i, j;
 
-    for( i=0; i<this->NUM_LINHAS; ++i )  {
+    // Variaveis auxiliares para os atributos do objeto
+    long numLinhas   =  this->numLinhas;
+    long numColunas  =  this->numColunas;
+    char** mapaGeracaoAtual     =  this->mapaGeracaoAtual;
 
-        for( j=0; j<this->NUM_COLUNAS; ++j )  {
+    // Imprime o conteudo das celulas em console
+    for( i=0; i<numLinhas; ++i )  {
 
-            cout << this->colonia[i][j];
+        for( j=0; j<numColunas; ++j )  {
+
+            cout << mapaGeracaoAtual[i][j];
         }
         cout << endl;
     }    
