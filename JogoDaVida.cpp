@@ -60,10 +60,15 @@ class Vida {
         ~Vida();    
 
 
+        // Metodo que cria um novo organismo na posicao (linha, coluna) do mapa da geracao atual
+        void nasce( long linha, long coluna );
+
+        // Metodo que elimina um organismo na posicao (linha, coluna) do mapa da geracao atual
+        void morre( long linha, long coluna );
+
         // Metodo que gera a proxima geracao de organismos, com base na geracao atual e 
         // nas regras do Jogo da Vida de John Horton Conway
         void proximaGeracao();
-
 
         // Metodo que imprime a colonia de organismos no console, onde:
         //    *  significa presenca de organismo 
@@ -200,7 +205,7 @@ Vida::Vida( long numLinhas, long numColunas )  {
 // a memoria dinamica alocada pelo objeto da classe Vida
 Vida::~Vida()  {
 
-    long i, j;
+    long i;
 
     // Variaveis auxiliares para os atributos do objeto
     long numLinhas   =  this->numLinhas;
@@ -229,8 +234,26 @@ Vida::~Vida()  {
 
 
 
-// Metodo que gera a proxima geracao de organismos, com base na geracao atual e 
-// nas regras do Jogo da Vida de John Horton Conway
+// Definicao do metodo que cria um novo organismo na posicao (linha, coluna) do mapa da geracao atual
+void Vida::nasce( long linha, long coluna )  {
+
+    this->nasce( this->mapaGeracaoAtual, linha, coluna );
+
+} // Fim da definicao do metodo nasce
+
+
+
+// Definicao do metodo que elimina um organismo na posicao (linha, coluna) do mapa da geracao atual
+void Vida::morre( long linha, long coluna )  {
+
+    this->morre( this->mapaGeracaoAtual, linha, coluna );
+
+} // Fim da definicao do metodo morre
+
+
+
+// Definicao do metodo que gera a proxima geracao de organismos, com base na 
+// geracao atual e nas regras do Jogo da Vida de John Horton Conway
 void Vida::proximaGeracao()  {
 
     long i, j;
@@ -271,7 +294,7 @@ void Vida::proximaGeracao()  {
     } // for i
 
     this->mapaGeracaoAtual    = mapaGeracaoFutura;
-    this->mapaGeracaoAnterior = mapaGeracaoAnterior
+    this->mapaGeracaoAnterior = mapaGeracaoAnterior;
 
 } // Fim da definicao do metodo proximaGeracao
 
@@ -328,7 +351,7 @@ void carregarColoniaDoArquivo( Vida* colonia,
 // Definicao da funcao main
 int main()   {
 
-    Vida colonia;
+    Vida colonia( 22, 80 );
 
     carregarColoniaDoArquivo( &colonia, "entrada.txt" ); 
 
