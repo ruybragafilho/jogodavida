@@ -355,8 +355,8 @@ void limparTela();
 
 
 // Prototipo da funcao que mostra as opcoes de execucao para o usuario.
-// Se o usuario digitar o caracter 'p' ou 'P', a funcao retorna True.
-// Se o usuario digitar qualquer outro caracter, a funcao retorna False.
+// Se o usuario digitar o caracter 'p' ou 'P', a funcao retorna true.
+// Se o usuario digitar qualquer outro caracter, a funcao retorna false.
 //   
 //    P  -  Mostrar Proxima Geracao
 //    S  -  Sair do programa
@@ -380,14 +380,14 @@ int main()   {
     while( imprimirOpcoesParaUsuario() )  {
 
         colonia.proximaGeracao();
-        
+
         limparTela();
         colonia.imprime();
     }
 
   
     cout << endl << endl << endl;
-    cout << "JOGO VIDA!";
+    cout << "FIM - JOGO VIDA!";
     cout << endl << endl << endl;
 
     return( 0 );
@@ -409,26 +409,25 @@ int main()   {
 void carregarColoniaDoArquivo( Vida* colonia,
                                string nomeArquivo )  {
 
-    ifstream fin( nomeArquivo );
+    ifstream fin( nomeArquivo ); // Abre o arquivo de entrada
     long n;
     long x, y;
 
+    // Le do arquivo o numero de organismos da configuracao inicial
     fin >> n;
-    cout << n << " \n";
 
     while( n > 0 )  {
 
+        // Le do arquivo as coordenadas de um organismo e faz ele nascer no mapa 
         fin >> x;
         fin >> y;
-
-        cout << x << " ";
-        cout << y << " \n";
-
 
         colonia->nasce( x, y );
 
         --n;
     }
+
+    fin.close(); // Fecha o arquivo de entrada
 
 } // Fim da definicao da funcao carregarColoniaDoArquivo
 
@@ -444,8 +443,8 @@ void limparTela()  {
 
 
 // Definicao da funcao que mostra as opcoes de execucao para o usuario.
-// Se o usuario digitar o caracter 'p' ou 'P', a funcao retorna True.
-// Se o usuario digitar qualquer outro caracter, a funcao retorna False.
+// Se o usuario digitar o caracter 'p' ou 'P', a funcao retorna true.
+// Se o usuario digitar qualquer outro caracter, a funcao retorna false.
 //   
 //    P  -  Mostrar Proxima Geracao
 //    S  -  Sair do programa
@@ -454,15 +453,17 @@ bool imprimirOpcoesParaUsuario()  {
 
     char opcao;
 
-
+    // Imprime a mensagem para o usuario
     cout << endl << endl;
     cout << "Didite a opcao desejada" << endl << endl;
     cout << "P  -  Mostrar Proxima Geracao" << endl;
     cout << "S  -  Sair do programa" << endl << endl;
     cout << "Opcao: ";
 
+    // Le a opcao do usuario
     cin >> opcao;
 
+    // Retorna true ou false dependendo da opcao do usuario
     return (( opcao == 'P' || opcao == 'p' ) ? true : false);
 
 } // Fim da definicao da funcao imprimirOpcoesParaUsuario
