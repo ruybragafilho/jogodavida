@@ -169,8 +169,8 @@ Vida::Vida( long numLinhas, long numColunas )  {
 
     // Alocacao dinamica de memoria para os mapas
 
-    *mapaGeracaoAtual     = new char[numLinhas];
-    *mapaGeracaoAnterior  = new char[numLinhas];
+    mapaGeracaoAtual     = new char*[numLinhas];
+    mapaGeracaoAnterior  = new char*[numLinhas];
 
     for( i=0; i<numLinhas; ++i )  {
 
@@ -185,7 +185,7 @@ Vida::Vida( long numLinhas, long numColunas )  {
 
         for( j=0; j<numColunas; ++j )  {
 
-            mapaGeracaoAtual[i][j] = mapaGeracaoAnterior[i][j] = ' ';            
+            mapaGeracaoAtual[i][j] = mapaGeracaoAnterior[i][j] = ' ';             
         }
     }
 
