@@ -217,12 +217,12 @@ Vida::~Vida()  {
 
     for( i=0; i<numLinhas; ++i )  {
 
-        delete( mapaGeracaoAtual[i] );
-        delete( mapaGeracaoAnterior[i] );       
+        delete[] mapaGeracaoAtual[i];
+        delete[] mapaGeracaoAnterior[i];       
     }
 
-    delete( mapaGeracaoAtual );
-    delete( mapaGeracaoAnterior );    
+    delete[] mapaGeracaoAtual;
+    delete[] mapaGeracaoAnterior;    
 
 } // Fim da definicao do destrutor da classe Vida  
 
