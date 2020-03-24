@@ -333,7 +333,7 @@ void Vida::imprime()  {
 
 
 
-// prototipo da funcao que carrega uma colonia de organismos
+// Prototipo da funcao que carrega uma colonia de organismos
 // do arquivo cujo nome eh passado como parametro.
 // O arquivo tem o seguinte formato:
 // n
@@ -348,6 +348,24 @@ void carregarColoniaDoArquivo( Vida* colonia,
                                string nomeArquivo );
 
 
+
+// Prototipo da funcao que limpa a tela do usuario.
+void limparTela();
+
+
+
+// Prototipo da funcao que mostra as opcoes de execucao para o usuario.
+// Se o usuario digitar o caracter 'p' ou 'P', a funcao retorna True.
+// Se o usuario digitar qualquer outro caracter, a funcao retorna False.
+//   
+//    P  -  Mostrar Proxima Geracao
+//    S  -  Sair do programa
+//
+bool imprimirOpcoesParaUsuario();
+
+
+
+
 // Definicao da funcao main
 int main()   {
 
@@ -355,8 +373,19 @@ int main()   {
 
     carregarColoniaDoArquivo( &colonia, "entrada.txt" ); 
 
+
+    limparTela();
     colonia.imprime();
 
+    while( imprimirOpcoesParaUsuario() )  {
+
+        colonia.proximaGeracao();
+        
+        limparTela();
+        colonia.imprime();
+    }
+
+  
     cout << endl << endl << endl;
     cout << "JOGO VIDA!";
     cout << endl << endl << endl;
@@ -401,4 +430,39 @@ void carregarColoniaDoArquivo( Vida* colonia,
         --n;
     }
 
-} // Fim da funcao carregarColoniaDoArquivo
+} // Fim da definicao da funcao carregarColoniaDoArquivo
+
+
+
+// Definicao da funcao que limpa a tela do usuario.
+void limparTela()  {
+
+    cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+
+} // Fim da definicao da funcao limparTela
+
+
+
+// Definicao da funcao que mostra as opcoes de execucao para o usuario.
+// Se o usuario digitar o caracter 'p' ou 'P', a funcao retorna True.
+// Se o usuario digitar qualquer outro caracter, a funcao retorna False.
+//   
+//    P  -  Mostrar Proxima Geracao
+//    S  -  Sair do programa
+//
+bool imprimirOpcoesParaUsuario()  {
+
+    char opcao;
+
+
+    cout << endl << endl;
+    cout << "Didite a opcao desejada" << endl << endl;
+    cout << "P  -  Mostrar Proxima Geracao" << endl;
+    cout << "S  -  Sair do programa" << endl << endl;
+    cout << "Opcao: ";
+
+    cin >> opcao;
+
+    return (( opcao == 'P' || opcao == 'p' ) ? true : false);
+
+} // Fim da definicao da funcao imprimirOpcoesParaUsuario
